@@ -106,7 +106,7 @@ class SocialGraph:
         #       Add to visited
                 visited[v] = path
                 for friend in self.friendships[v]:
-                    path_copy = list(path)
+                    path_copy =path.copy()
                     path_copy.append(friend)
                     queue.enqueue(path_copy)
 
