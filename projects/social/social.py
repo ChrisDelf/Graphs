@@ -1,4 +1,7 @@
 from random import shuffle
+import sys
+sys.path.insert(0, '../graph')
+from util import Stack, Queue
 
 class User:
     def __init__(self, name):
@@ -14,6 +17,7 @@ class SocialGraph:
         """
         Creates a bi-directional friendship
         """
+
         if user_id == friend_id:
             print("WARNING: You cannot be friends with yourself")
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
@@ -54,16 +58,22 @@ class SocialGraph:
         # Create friendships
         user_friendships = (num_users * avg_friendships) // 2
         possible_friendships = []
-        for user in range(1, num_users + 1):
-            print(user)
-            for possible_friend in range(user + 1, num_users +1):
-                possible_friendships.append((user, possible_friend))
+        for user1 in range(1, num_users):
+            # print("------------")
+            # print(user1)
+            # print("num_users", num_users)
+            for possible_friend in range(user1 + 1, num_users +1):
 
+                # print(possible_friend)
+                possible_friendships.append((user1, possible_friend))
+                # print(possible_friendships)
+                # print("------------")
         shuffle(possible_friendships)
 
-        for user in range(1, user_friendships + 1):
+        for user in range(0, user_friendships):
+            # print("user_friendships", possible_friendships)
 
-
+            # print("possible_friend",possible_friendships[user][0], possible_friendships[user][1])
             self.add_friendship(possible_friendships[user][0], possible_friendships[user][1])
 
     def get_all_social_paths(self, user_id):
@@ -76,13 +86,36 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
+        if user_id not in self.friendships:
+            return visited
         # !!!! IMPLEMENT ME
+        #Implementing a breath first since we are looking for shortest path
+        # Create a queue
+        queue = Queue()
+        # Put the starting point in that
+        queue.enqueue([user_id])
+
+        # While there is stuff in the queue/stack
+        while queue.size() > 0:
+        #    dequeue the first path
+            path = queue.dequeue()
+            v = path[-1]
+        #    If not visited
+            if v not in visited:
+        #       DO THE THING!
+        #       Add to visited
+                visited[v] = path
+                for friend in self.friendships[v]:
+                    path_copy = list(path)
+                    path_copy.append(friend)
+                    queue.enqueue(path_copy)
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
-    print(sg.friendships)
+    # print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
