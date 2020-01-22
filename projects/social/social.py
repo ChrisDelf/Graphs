@@ -48,7 +48,7 @@ class SocialGraph:
         for user in range(num_user):
             self.add_user(f"User{user}")
 
-
+        friendships_amount = (num_user * avg_friendships) // 2
         # Create friendships
         for friend in range(avg_friendships):
 
